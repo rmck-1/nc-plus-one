@@ -4,7 +4,7 @@ import json
 def drop_table_users(cursor):
     """Drops users table to start fresh when seed runs"""
     drop_users_table = """
-    DROP TABLE users;
+    DROP TABLE IF EXISTS users;
     """
     cursor.execute(drop_users_table)
 
