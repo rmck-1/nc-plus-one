@@ -45,7 +45,6 @@ def seed_events():
     """Completes all events seeding by calling every function"""
     conn = get_connection()
     cursor = conn.cursor()
-    drop_table_events(cursor)
     create_table_events(cursor)
     events = get_events()
     insert_events(cursor, events)

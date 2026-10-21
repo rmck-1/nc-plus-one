@@ -44,7 +44,6 @@ def seed_users():
     """Completes all user seeding by calling every function"""
     conn = get_connection()
     cursor = conn.cursor()
-    drop_table_users(cursor)
     create_table_users(cursor)
     users = get_users()
     insert_users(cursor, users)

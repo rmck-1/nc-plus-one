@@ -41,7 +41,6 @@ def seed_venues():
     """Completes all venue seeding by calling every function"""
     conn = get_connection()
     cursor = conn.cursor()
-    drop_table_venues(cursor)
     create_table_venues(cursor)
     venues = get_venues()
     insert_venues(cursor, venues)

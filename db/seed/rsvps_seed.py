@@ -41,7 +41,6 @@ def seed_rsvps():
     """Completes all rsvps seeding by calling every function"""
     conn = get_connection()
     cursor = conn.cursor()
-    drop_table_rsvps(cursor)
     create_table_rsvps(cursor)
     events = get_rsvps()
     insert_rsvps(cursor, events)
