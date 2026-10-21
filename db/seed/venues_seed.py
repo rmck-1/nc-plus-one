@@ -38,7 +38,7 @@ def insert_venues(cursor, venues):
         cursor.execute(insert_users, (venue["name"], venue["address"], venue["capacity"]))
 
 def seed_venues():
-    """Completes all user seeding by calling every function"""
+    """Completes all venue seeding by calling every function"""
     conn = get_connection()
     cursor = conn.cursor()
     drop_table_venues(cursor)
