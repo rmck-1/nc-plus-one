@@ -33,13 +33,13 @@ def get_events():
 def insert_events(cursor, events):
     """Loops through the events.json data and inserts each event into the event table"""
     events_list = events
-    insert_users = """
+    insert_events = """
      INSERT INTO events
      (title, description, starts_at, ends_at, organiser_id, venue_id)
      VALUES (%s, %s, %s, %s, %s, %s)
      """   
     for event in events_list:
-        cursor.execute(insert_users, (event["title"], event["description"], event["starts_at"], event["ends_at"], event["organiser_id"], event["venue_id"]))
+        cursor.execute(insert_events, (event["title"], event["description"], event["starts_at"], event["ends_at"], event["organiser_id"], event["venue_id"]))
 
 def seed_events():
     """Completes all events seeding by calling every function"""
