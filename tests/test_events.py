@@ -33,3 +33,16 @@ def test_get_events_ID_returns_single_event_with_that_id(client):
     assert response.status_code == 200
     assert isinstance(data, dict)
     assert len(data["event"]) == 1
+
+def test_get_events_id_returns_404_when_id_does_not_exist(client):
+    response = client.get("/events/99")
+    data = response.json()
+    assert response.status_code == 404
+    assert data["error"]["message"] == "Event not found"
+
+def test_get_events_id_returns_400_when_invalid_str_input_provided(client):
+    invalid_input = "one"
+    response = client.get(f"/events/{invalid_input}")
+    data = response.json()
+    assert response.status_code == 400
+    assert data["error"][0]["message"] == f"Invalid input: '{invalid_input}'"

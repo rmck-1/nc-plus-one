@@ -1,4 +1,5 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
+from fastapi.exceptions import HTTPException, RequestValidationError
 import psycopg2.extras
 from db.seed.connections import get_connection
 
@@ -20,7 +21,7 @@ def get_events():
     return {"events": rows}
 
 @router.get("/{event_id}", status_code=200)
-def get_event(event_id: int):
+def get_event(event_id: int): 
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("""
@@ -28,6 +29,11 @@ def get_event(event_id: int):
     WHERE id = %s;
     """, (event_id,))
     row = cursor.fetchone()
+    if row is None:
+        cursor.close()
+        conn.close()
+        raise HTTPException(status_code=404, detail={"code": "NOT_FOUND", 
+                                                     "message": "Event not found"})
     cursor.close()
     conn.close()
     return {"event": [{"id": row[0],
