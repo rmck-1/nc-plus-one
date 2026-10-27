@@ -5,3 +5,4 @@ __pycache__
 .env.test
 .pytest_cache
 pytest_cache
+sql_statements.sql
