@@ -18,3 +18,22 @@ def get_events():
     cursor.close()
     conn.close()
     return {"events": rows}
+
+@router.get("/{event_id}", status_code=200)
+def get_event(event_id: int):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+    SELECT * FROM events
+    WHERE id = %s;
+    """, (event_id,))
+    row = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    return {"event": [{"id": row[0],
+                      "title": row[1],
+                      "description": row[2],
+                      "starts_at": row[3],
+                      "ends_at": row[4],
+                      "organiser_id": row[5],
+                      "venue_id": row[6]}]}

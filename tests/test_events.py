@@ -26,3 +26,10 @@ def test_get_events_returns_dictionary_list_ordered_by_start_date_ascending(clie
     response = client.get("/events")
     data = response.json()
     assert data["events"][0]["starts_at"] == "2025-12-31T23:30:00+00:00"
+
+def test_get_events_ID_returns_single_event_with_that_id(client):
+    response = client.get("/events/2")
+    data = response.json()
+    assert response.status_code == 200
+    assert isinstance(data, dict)
+    assert len(data["event"]) == 1
