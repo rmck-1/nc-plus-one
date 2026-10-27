@@ -27,6 +27,16 @@ def test_get_events_returns_dictionary_list_ordered_by_start_date_ascending(clie
     data = response.json()
     assert data["events"][0]["starts_at"] == "2025-12-31T23:30:00+00:00"
 
+def test_get_events_venue_id_parameter_returns_dictionary_with_all_events_that_have_that_id(client):
+    response = client.get("/events?venue_id=3")
+    data = response.json()
+    assert len(data["events"]) == 2
+
+def test_get_events_organiser_id_parameter_returns_dictionary_with_all_events_that_have_that_id(client):
+    response = client.get("/events?organiser_id=1")
+    data = response.json()
+    assert len(data["events"]) == 1
+
 def test_get_events_ID_returns_single_event_with_that_id(client):
     response = client.get("/events/2")
     data = response.json()
@@ -52,3 +62,4 @@ def test_get_events_id_returns_400_when_invalid_str_input_provided(client):
     data = response.json()
     assert response.status_code == 400
     assert data["error"][0]["message"] == f"Invalid input: '{invalid_input}'"
+
