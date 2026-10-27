@@ -1,5 +1,6 @@
 from connections import get_connection
 import json
+import os
 
 def drop_table_venues(cursor):
     """Drops venues table to start fresh when seed runs"""
@@ -22,7 +23,9 @@ def create_table_venues(cursor):
 
 def get_venues():
     """I/O to get venues.json file"""
-    with open ("./db/data/venues.json") as file:
+    env = os.getenv("ENV", "development")
+    folder = "test_data" if env == 'test' else "data"
+    with open (f"./db/{folder}/venues.json") as file:
         venues = json.load(file)
     return venues
 

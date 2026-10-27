@@ -1,5 +1,6 @@
 from connections import get_connection
 import json
+import os
 
 def drop_table_rsvps(cursor):
     """Drops rsvps table to start fresh when seed runs"""
@@ -22,7 +23,9 @@ def create_table_rsvps(cursor):
 
 def get_rsvps():
     """I/O to get rsvps.json file"""
-    with open ("./db/data/rsvps.json") as file:
+    env = os.getenv("ENV", "development")
+    folder = "test_data" if env == 'test' else "data"
+    with open (f"./db/{folder}/rsvps.json") as file:
         rsvps = json.load(file)
     return rsvps
 

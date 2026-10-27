@@ -4,7 +4,9 @@ from dotenv import load_dotenv
 
 # Establishes the connection to the database
 def get_connection():
-    load_dotenv(".env")
+    env = os.getenv("ENV", "development")
+    env_file = ".env.test" if env == "test" else ".env"
+    load_dotenv(env_file, override=True)
     if not os.getenv("PGDATABASE"):
         raise RuntimeError("PGDATABASE NOT SET")
     connection = psycopg2.connect()

@@ -1,5 +1,6 @@
 from connections import get_connection
 import json
+import os
 
 def drop_table_events(cursor):
     """Drops events table to start fresh when seed runs"""
@@ -26,7 +27,9 @@ def create_table_events(cursor):
 
 def get_events():
     """I/O to get events.json file"""
-    with open ("./db/data/events.json") as file:
+    env = os.getenv("ENV", "development")
+    folder = "test_data" if env == 'test' else "data"
+    with open (f"./db/{folder}/events.json") as file:
         events = json.load(file)
     return events
 

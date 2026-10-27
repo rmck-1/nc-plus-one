@@ -1,5 +1,6 @@
 from connections import get_connection
 import json
+import os
  
 def drop_table_users(cursor):
     """Drops users table to start fresh when seed runs"""
@@ -23,7 +24,9 @@ def create_table_users(cursor):
 
 def get_users():
     """I/O to get users.json file"""
-    with open ("./db/data/users.json") as file:
+    env = os.getenv("ENV", "development")
+    folder = "test_data" if env == 'test' else "data"
+    with open (f"./db/{folder}/users.json") as file:
         users = json.load(file)
     return users
 
