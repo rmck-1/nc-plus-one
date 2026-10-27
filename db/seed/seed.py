@@ -17,11 +17,12 @@ def drop_tables():
     cursor.close()
     conn.close()
 
-drop_tables()
-seed_users()
-seed_venues()
-seed_events()
-seed_rsvps()
+def drop_and_seed_tables():
+    drop_tables()
+    seed_users()
+    seed_venues()
+    seed_events()
+    seed_rsvps()
 
 
 
