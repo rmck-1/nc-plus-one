@@ -25,7 +25,7 @@ def test_get_events_request_returns_dictionary_with_all_events_in_list_as_value(
 def test_get_events_returns_dictionary_list_ordered_by_start_date_ascending(client):
     response = client.get("/events")
     data = response.json()
-    assert data["events"][0]["starts_at"] == "2025-12-31T23:30:00+00:00"
+    assert data["events"][0]["starts_at"] == "2025-12-31T23:30:00Z"
 
 def test_get_events_venue_id_parameter_returns_dictionary_with_all_events_that_have_that_id(client):
     response = client.get("/events?venue_id=3")
@@ -36,6 +36,13 @@ def test_get_events_organiser_id_parameter_returns_dictionary_with_all_events_th
     response = client.get("/events?organiser_id=1")
     data = response.json()
     assert len(data["events"]) == 1
+
+def test_get_events_returns_venue_details_joined_from_venues_table(client):
+    response = client.get("/events")
+    data = response.json()
+    assert data["events"][0]["venue_name"] == "venue_b"
+    assert data["events"][0]["venue_address"] == "address_b"
+    assert data["events"][0]["venue_capacity"] == 50
 
 def test_get_events_ID_returns_single_event_with_that_id(client):
     response = client.get("/events/2")
