@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from fastapi.exceptions import HTTPException, RequestValidationError
+from fastapi.exceptions import HTTPException
 import psycopg2.extras
 from db.seed.connections import get_connection
 
@@ -25,8 +25,11 @@ def get_event(event_id: int):
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("""
-    SELECT * FROM events
-    WHERE id = %s;
+    SELECT events.id, events.title, events.description, events.starts_at, events.ends_at, events.organiser_id, events.venue_id,
+    venues.name
+    FROM events
+    INNER JOIN venues ON events.venue_id = venues.id
+    WHERE events.id = %s;
     """, (event_id,))
     row = cursor.fetchone()
     if row is None:
@@ -42,4 +45,5 @@ def get_event(event_id: int):
                       "starts_at": row[3],
                       "ends_at": row[4],
                       "organiser_id": row[5],
-                      "venue_id": row[6]}]}
+                      "venue_id": row[6],
+                      "venue": row[7]}]}
