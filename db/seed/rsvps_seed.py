@@ -1,4 +1,4 @@
-from connections import get_connection
+from db.seed.connections import get_connection
 import json
 import os
 

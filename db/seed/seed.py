@@ -1,8 +1,8 @@
-from users_seed import seed_users, drop_table_users
-from venues_seed import seed_venues, drop_table_venues
-from events_seed import seed_events, drop_table_events
-from rsvps_seed import seed_rsvps, drop_table_rsvps
-from connections import get_connection
+from db.seed.users_seed import seed_users, drop_table_users
+from db.seed.venues_seed import seed_venues, drop_table_venues
+from db.seed.events_seed import seed_events, drop_table_events
+from db.seed.rsvps_seed import seed_rsvps, drop_table_rsvps
+from db.seed.connections import get_connection
 
 # seed the user, venues table in the database.
 
