@@ -15,8 +15,14 @@ def seed_test_db():
 def client():
     return TestClient(app)
 
-def test_get_events_request_returns_list_of_all_events(client):
+def test_get_events_request_returns_dictionary_with_all_events_in_list_as_value(client):
     response = client.get("/events")
+    data = response.json()
     assert response.status_code == 200
-    assert isinstance(response.json(), list)
-    assert len(response.json()) == 5
+    assert isinstance(data, dict)
+    assert len(data["events"]) == 5
+
+def test_get_events_returns_dictionary_list_ordered_by_start_date_ascending(client):
+    response = client.get("/events")
+    data = response.json()
+    assert data["events"][0]["starts_at"] == "2025-12-31T23:30:00+00:00"
