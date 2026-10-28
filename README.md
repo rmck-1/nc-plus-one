@@ -25,6 +25,11 @@ Establishing the database connection requires local database credentials. This i
 
 1. An **.env** file should be created with your local database credentials.
 2. **.env.example** has been provided with the required variables to help.
+3. To generate a JWT_SECRET run the following command:
+
+```
+python -c "import secrets; print(secrets.token_hex(32))"
+```
 
 The structure looks like this:
 ```
@@ -33,6 +38,7 @@ PGUSER=
 PGPASSWORD=
 PGHOST=
 PGPORT=
+JWT_SECRET =
 ```
 
 ## Step Three - seed the database tables
