@@ -8,8 +8,6 @@ class Events(BaseModel):
     description: Optional[str]
     starts_at: datetime
     ends_at: datetime
-    organiser_id: int
-    venue_id: int
     venue_name: str
     venue_address: Optional[str]
     venue_capacity: Optional[int]
@@ -20,14 +18,13 @@ class EventsResponse(BaseModel):
 class Event(BaseModel):
     id: int
     title: str
-    description: Optional[str]
+    description: Optional[str] 
     starts_at: datetime
     ends_at: datetime
-    organiser_id: int
-    venue_id: int
     venue_name: str
-    venue_address: Optional[str]
+    venue_address: Optional[str] 
     venue_capacity: Optional[int]
+    created_at: datetime 
 
 class EventResponse(BaseModel):
-    event: list[Event]
+    event: Event

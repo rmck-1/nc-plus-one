@@ -3,7 +3,7 @@ from fastapi.exceptions import HTTPException
 import psycopg2.extras
 from db.seed.connections import get_connection
 from typing import Optional
-from schemas.events_schema import EventsResponse
+from schemas.events_schema import EventsResponse, EventResponse
 
 router = APIRouter(prefix="/events", tags=["events"])
 
@@ -45,15 +45,15 @@ def get_events(venue_id: Optional[int]=None, organiser_id: Optional[int]=None):
     conn.close()
     return {"events": rows}
 
-@router.get("/{event_id}", status_code=200)
+@router.get("/{event_id}", status_code=200, response_model=EventResponse)
 def get_event(event_id: int):
     """get event endpoint that returns a dictionary with the specified event and
     the venue name from a join table. It has error handling for 404 and 400 status codes"""
     conn = get_connection()
-    cursor = conn.cursor()
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     cursor.execute("""
-    SELECT events.id, events.title, events.description, events.starts_at, events.ends_at, events.organiser_id, events.venue_id,
-    venues.name
+    SELECT events.id, events.title, events.description, events.starts_at, events.ends_at, events.organiser_id, events.venue_id, events.created_at,
+    venues.name AS venue_name, venues.address AS venue_address, venues.capacity AS venue_capacity
     FROM events
     INNER JOIN venues ON events.venue_id = venues.id
     WHERE events.id = %s;
@@ -66,11 +66,4 @@ def get_event(event_id: int):
                                                      "message": "Event not found"})
     cursor.close()
     conn.close()
-    return {"event": [{"id": row[0],
-                      "title": row[1],
-                      "description": row[2],
-                      "starts_at": row[3],
-                      "ends_at": row[4],
-                      "organiser_id": row[5],
-                      "venue_id": row[6],
-                      "venue": row[7]}]}
+    return {"event": row}

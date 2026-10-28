@@ -49,13 +49,14 @@ def test_get_events_ID_returns_single_event_with_that_id(client):
     data = response.json()
     assert response.status_code == 200
     assert isinstance(data, dict)
-    assert len(data["event"]) == 1
-    assert data["event"][0]["title"] == "event_a"
+    assert data["event"]["title"] == "event_a"
 
 def test_get_event_id_returns_venue_details_joined_from_venues_table(client):
     response = client.get("/events/2")
     data = response.json()
-    assert data["event"][0]["venue"] == "venue_a"
+    assert data["event"]["venue_name"] == "venue_a"
+    assert data["event"]["venue_address"] == "address_a"
+    assert data["event"]["venue_capacity"] == 10
 
 def test_get_events_id_returns_404_when_id_does_not_exist(client):
     response = client.get("/events/99")
