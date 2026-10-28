@@ -12,7 +12,7 @@ router = APIRouter(prefix="/auth", tags=["authentication"])
 def login(body: LoginRequest):
     user = get_user(body.email)
     if verify_password(body.password, user["user"]['password']):
-        return {"user token:":{
+        return {"user_token":{
             "access_token": create_access_token(user["user"]["id"]),
             "token_type": "bearer"
         }}
