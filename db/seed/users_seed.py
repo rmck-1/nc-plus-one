@@ -1,6 +1,7 @@
 from db.seed.connections import get_connection
 import json
 import os
+from utils.password_hash import hash_password
  
 def drop_table_users(cursor):
     """Drops users table to start fresh when seed runs"""
@@ -30,7 +31,6 @@ def get_users():
         users = json.load(file)
     return users
 
-
 def insert_users(cursor, users):
     """Loops through the users.json data and inserts each user into the users table"""
     user_list = users
@@ -40,8 +40,7 @@ def insert_users(cursor, users):
      VALUES (%s, %s, %s)
      """   
     for user in user_list:
-        cursor.execute(insert_users, (user["email"], user["password"], user["name"]))
-
+        cursor.execute(insert_users, (user["email"], hash_password(user["password"]), user["name"]))
 
 def seed_users():
     """Completes all user seeding by calling every function"""

@@ -4,7 +4,9 @@ from db.seed.events_seed import seed_events, drop_table_events
 from db.seed.rsvps_seed import seed_rsvps, drop_table_rsvps
 from db.seed.connections import get_connection
 
-# seed the user, venues table in the database.
+# seeds the database tables
+# python -m db.seed.seed - to seed normal DB
+# ENV=test -m db.seed.seed - to seed test DB
 
 def drop_tables():
     conn = get_connection()
@@ -24,6 +26,7 @@ def drop_and_seed_tables():
     seed_events()
     seed_rsvps()
 
+drop_and_seed_tables()
 
 
 
