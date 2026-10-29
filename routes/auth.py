@@ -33,3 +33,4 @@ def register_user(body: RegisterRequest):
                     "message": "email address already registered"}
         )
     return {"user": new_user}
+
