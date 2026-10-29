@@ -6,6 +6,7 @@ from main import app
 
 import pytest
 from db.seed.seed import drop_and_seed_tables
+from utils.jwt_utils import create_access_token
 
 @pytest.fixture(autouse=True)
 def seed_test_db():
@@ -84,3 +85,15 @@ def register_user_missing_password():
         "name": "Alice Smith",
         "email": "alice@example.com",
     }
+
+@pytest.fixture()
+def get_auth_token_user_1():
+    token = create_access_token(id=1)
+    auth_headers = {"Authorization": f"Bearer {token}"}
+    return auth_headers
+
+@pytest.fixture()
+def get_auth_token_user_2():
+    token = create_access_token(id=2)
+    auth_headers = {"Authorization": f"Bearer {token}"}
+    return auth_headers
