@@ -4,7 +4,7 @@ from typing import Optional
 from schemas.events_schema import EventsResponse, EventResponse
 from models.events_models import get_events_venue_id_query_parameter, get_events_organiser_id_query_parameter, get_all_events, get_event_id
 from models.auth_models import get_current_user
-from models.rsvp_models import has_user_rsvpd, rsvp_for_event
+from models.rsvp_models import has_user_rsvpd, rsvp_for_event, delete_user_rsvp
 
 router = APIRouter(prefix="/events", tags=["events"])
 
@@ -46,3 +46,12 @@ def event_rsvp(event_id: int, current_user_id: int = Depends(get_current_user)):
                                     "message": "Already registered for event"})
     new_rsvp = rsvp_for_event(current_user_id, event_id)
     return {"rsvp": new_rsvp}
+
+@router.delete("/{event_id}/rsvp/me", status_code=204)
+def delete_rsvp(event_id: int, current_user_id: int = Depends(get_current_user)):
+    success = delete_user_rsvp(current_user_id, event_id)
+    if not success:
+        raise HTTPException(status_code=404,
+                            detail={"code": "NOT_FOUND", 
+                                    "message": "Not registered for event"})
+    return

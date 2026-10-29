@@ -29,3 +29,20 @@ def test_rsvp_with_no_header_returns_401_error(client):
 def test_rsvp_with_string_event_id_returns_400_error(client, get_auth_token_user_1):
     response = client.post("/events/one/rsvp", headers=get_auth_token_user_1)
     assert response.status_code == 400
+
+def test_missing_token_returns_401_error_when_deleting_rsvp(client):
+    response = response = client.delete("/events/1/rsvp/me")
+    assert response.status_code == 401
+
+def test_invalid_token_returns_401_error_when_deleting_rsvp(client):
+    response = response = client.delete("/events/1/rsvp/me", headers={"Authorization": "Bearer 123456789"})
+    assert response.status_code == 401
+
+def test_delete_rsvp_that_doesnt_exist_returns_404_error(client, get_auth_token_user_1):
+    response = client.delete("/events/1/rsvp/me", headers=get_auth_token_user_1)
+    assert response.status_code == 404
+    
+
+def test_delete_rsvp_that_user_is_rsvpd_to_returns_204_status_code(client, get_auth_token_user_1):
+    response = client.delete("/events/3/rsvp/me", headers=get_auth_token_user_1)
+    assert response.status_code == 204

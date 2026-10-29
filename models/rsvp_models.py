@@ -31,3 +31,24 @@ def rsvp_for_event(user_id: int, event_id: int):
     cursor.close()
     conn.close()
     return new_rsvp
+
+def delete_user_rsvp(user_id: int, event_id: int):
+    conn = get_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("""
+        DELETE FROM rsvps
+        WHERE attendee_id = %s
+        AND event_id = %s;
+        """, (user_id, event_id))
+        if cursor.rowcount != 1:
+            conn.rollback()
+            return False
+        conn.commit()
+        return True
+    except Exception:
+        conn.rollback()
+        return False
+    finally:
+        cursor.close()
+        conn.close()
