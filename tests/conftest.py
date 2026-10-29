@@ -47,3 +47,40 @@ def no_email():
     return{
         "password": "invalidpassword"
     }
+
+@pytest.fixture()
+def register_existing_email():
+    return{
+        "name": "Alice Smith",
+        "email": "user_c@example.com",
+        "password": "securepassword123"
+    }
+
+@pytest.fixture()
+def register_new_user():
+    return{
+        "name": "Alice Smith",
+        "email": "alice@example.com",
+        "password": "securepassword123"
+    }
+
+@pytest.fixture()
+def register_user_missing_email():
+    return{
+        "name": "Alice Smith",
+        "password": "securepassword123"     
+    }
+
+@pytest.fixture()
+def register_user_missing_name():
+    return{
+        "email": "alice@example.com",
+        "password": "securepassword123"
+    }
+
+@pytest.fixture()
+def register_user_missing_password():
+    return{
+        "name": "Alice Smith",
+        "email": "alice@example.com",
+    }
