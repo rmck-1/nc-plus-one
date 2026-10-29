@@ -11,4 +11,5 @@ def get_user(email):
     user = cursor.fetchone()
     cursor.close()
     conn.close()
-    return {"user": user}
+    return user
+    # return {"user": user}

@@ -39,11 +39,11 @@ def invalid_password():
 @pytest.fixture()
 def no_password():
     return{
-        "password": "invalidpassword"   
+        "email": "user_c@example.com"  
     }
 
 @pytest.fixture()
 def no_email():
     return{
-        "email": "user_c@example.com",   
+        "password": "invalidpassword"
     }
