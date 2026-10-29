@@ -1,6 +1,6 @@
-from fastapi import FastAPI, Request
-from fastapi.exceptions import HTTPException, RequestValidationError
-from fastapi.responses import JSONResponse
+from fastapi import FastAPI
+from fastapi.exceptions import RequestValidationError, HTTPException
+from utils.exceptions import validation_exception_handler, handle_http_exception
 
 from routes.events import router as events_router
 from routes.auth import router as auth_router
@@ -17,25 +17,5 @@ app.include_router(auth_router)
 #app.include_router(users_router)
 #app.include_router(venues_router)
 
-@app.exception_handler(HTTPException)
-def handle_http_exception(request: Request, exc: HTTPException):
-    return JSONResponse(status_code=exc.status_code, content={"error": exc.detail})
-
-@app.exception_handler(RequestValidationError)
-def validation_exception_handler(request: Request, exc: RequestValidationError):
-    errors = exc.errors()
-    formatted_errors = []
-    for error in errors:
-        loc = error.get("loc", [])
-        field_name = loc[-1] if loc else "unknown field"
-        error_type = error.get("type")
-        if error_type == "missing":
-            formatted_errors.append({
-                "code": "MISSING_FIELD",
-                "message": f"The '{field_name}' field is required"
-            })
-        else:
-            invalid_input = error.get("input")
-            formatted_errors.append({"code": "INVALID_INPUT",
-                                 "message": f"Invalid input: '{invalid_input}'"})
-    return JSONResponse(status_code=400, content={"error": formatted_errors})
+app.add_exception_handler(RequestValidationError, validation_exception_handler)
+app.add_exception_handler(HTTPException, handle_http_exception)
