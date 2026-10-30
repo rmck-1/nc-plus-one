@@ -19,7 +19,11 @@ def validation_exception_handler(request: Request, exc: RequestValidationError):
                 "message": f"The '{field_name}' field is required"
             })
         else:
-            invalid_input = error.get("input")
+            custom_message = error.get("msg")
+            if custom_message.startswith("Value error,"):
+                custom_message = custom_message.replace("Value error, ", "").strip()
+            message = custom_message if custom_message else f"Invalid input: '{error.get('input')}'"
+
             formatted_errors.append({"code": "INVALID_INPUT",
-                                 "message": f"Invalid input: '{invalid_input}'"})
+                                 "message": message})
     return JSONResponse(status_code=400, content={"error": formatted_errors})
