@@ -148,3 +148,35 @@ def test_patch_event_with_start_date_greater_than_end_date_but_no_end_date_provi
 def test_patch_event_end_date_provided_and_no_start_date_but_end_date_is_less_than_start_date(client, patch_user_1_event_with_end_date_lesser_no_start_date):
     response = client.patch("/events/1", headers=patch_user_1_event_with_end_date_lesser_no_start_date["headers"], json=patch_user_1_event_with_end_date_lesser_no_start_date["json"])
     assert response.status_code == 400
+
+def test_get_event_attendees_with_missing_token_returns_401(client):
+    response = client.get("/events/1/attendees")
+    assert response.status_code == 401
+
+def test_get_event_attendees_with_invalid_token_returns_401(client):
+    response = client.get("/events/1/attendees", headers={"Authorization": "Bearer 123456789"})
+    assert response.status_code == 401
+
+def test_get_event_attendees_with_valid_token_but_event_they_dont_own_returns_403(client,get_auth_token_user_2):
+    response = client.get("/events/1/attendees", headers=get_auth_token_user_2)
+    assert response.status_code == 403
+
+def test_get_event_attendees_with_valid_token_but_event_not_found_returns_404(client,get_auth_token_user_1):
+    response = client.get("/events/999/attendees", headers=get_auth_token_user_1)
+    assert response.status_code == 404
+
+def test_get_event_attendees_with_valid_token_and_valid_event_id_returns_list_of_attendees(client,get_auth_token_user_3):
+    response = client.get("/events/5/attendees", headers=get_auth_token_user_3)
+    data = response.json()    
+    assert response.status_code == 200
+    assert len(data["attendees"]) == 3
+    first_attendee = data["attendees"][0]
+    assert "attendee_id" in first_attendee
+    assert "name" in first_attendee
+    assert "email" in first_attendee
+
+def test_get_event_attendees_with_valid_token_and_valid_event_id_returns_empty_list_when_no_attendees(client,get_auth_token_user_1):
+    response = client.get("/events/1/attendees", headers=get_auth_token_user_1)
+    data = response.json()    
+    assert response.status_code == 200
+    assert data["attendees"] == []
