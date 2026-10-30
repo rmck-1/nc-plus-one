@@ -52,4 +52,3 @@ def test_delete_rsvp_that_user_is_rsvpd_to_is_actually_deleted(client, get_auth_
     assert response.status_code == 204
     response = client.delete("/events/3/rsvp/me", headers=get_auth_token_user_1)
     assert response.status_code == 404
-

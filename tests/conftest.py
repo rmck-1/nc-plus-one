@@ -142,3 +142,84 @@ def get_token_and_body_user_1_invalid_venue():
     }
     return {"headers": {"Authorization": f"Bearer {token}"},
             "json": body}
+
+@pytest.fixture()
+def patch_user_1_event():
+    token = create_access_token(id=1)
+    body = {
+       "description": "An evening of networking and good vibes.",
+       "starts_at": "2025-08-15T18:00:00Z",
+       "ends_at": "2025-08-15T21:00:00Z"
+    }
+    return {"headers": {"Authorization": f"Bearer {token}"},
+            "json": body}
+
+@pytest.fixture()
+def patch_user_1_event_empty_body():
+    token = create_access_token(id=1)
+    body = {
+    }
+    return {"headers": {"Authorization": f"Bearer {token}"},
+            "json": body}
+
+@pytest.fixture()
+def patch_user_1_event_with_user_2():
+    token = create_access_token(id=2)
+    body = {
+       "description": "An evening of networking and good vibes.",
+       "starts_at": "2025-08-15T18:00:00Z",
+       "ends_at": "2025-08-15T21:00:00Z"
+    }
+    return {"headers": {"Authorization": f"Bearer {token}"},
+            "json": body}
+
+@pytest.fixture()
+def patch_user_1_event_only_1_field():
+    token = create_access_token(id=1)
+    body = {
+       "description": "An evening of networking and good vibes.",
+    }
+    return {"headers": {"Authorization": f"Bearer {token}"},
+            "json": body}
+
+@pytest.fixture()
+def patch_user_1_event_with_invalid_date_format():
+    token = create_access_token(id=1)
+    body = {
+       "description": "An evening of networking and good vibes.",
+       "starts_at": "30/10/2026",
+       "ends_at": "2025-08-15T21:00:00Z"
+    }
+    return {"headers": {"Authorization": f"Bearer {token}"},
+            "json": body}
+
+@pytest.fixture()
+def patch_user_1_event_with_start_date_greater():
+    token = create_access_token(id=1)
+    body = {
+       "description": "An evening of networking and good vibes.",
+       "starts_at": "2026-08-15T18:00:00Z",
+       "ends_at": "2025-08-15T21:00:00Z"
+    }
+    return {"headers": {"Authorization": f"Bearer {token}"},
+            "json": body}
+
+@pytest.fixture()
+def patch_user_1_event_with_start_date_greater_no_end_date():
+    token = create_access_token(id=1)
+    body = {
+       "description": "An evening of networking and good vibes.",
+       "starts_at": "2026-08-15T18:00:00Z",
+    }
+    return {"headers": {"Authorization": f"Bearer {token}"},
+            "json": body}
+
+@pytest.fixture()
+def patch_user_1_event_with_end_date_lesser_no_start_date():
+    token = create_access_token(id=1)
+    body = {
+       "description": "An evening of networking and good vibes.",
+       "ends_at": "2023-08-15T18:00:00Z",
+    }
+    return {"headers": {"Authorization": f"Bearer {token}"},
+            "json": body}
