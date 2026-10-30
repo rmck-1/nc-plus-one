@@ -128,3 +128,23 @@ def update_event(event_id: int, update_fields: dict):
     finally:
         cursor.close()
         conn.close()
+
+def event_attendees(event_id):
+    conn = get_connection()
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    try:
+        cursor.execute("""
+        SELECT
+        rsvps.attendee_id, users.name, users.email
+        FROM rsvps
+        INNER JOIN users on rsvps.attendee_id = users.id
+        WHERE event_id = %s;
+        """, (event_id,))
+        attendees = cursor.fetchall()
+        return attendees
+    except Exception:
+        conn.rollback()
+        return False
+    finally:
+        cursor.close()
+        conn.close()

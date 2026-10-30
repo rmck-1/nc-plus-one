@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from fastapi.exceptions import HTTPException
 from typing import Optional
 from schemas.events_schema import EventsResponse, EventResponse, CreateEvent, ReturnEventResponse, PatchEvent
-from models.events_models import get_events_venue_id_query_parameter, get_events_organiser_id_query_parameter, get_all_events, get_event_id, create_new_event, update_event
+from models.events_models import get_events_venue_id_query_parameter, get_events_organiser_id_query_parameter, get_all_events, get_event_id, create_new_event, update_event, event_attendees
 from models.auth_models import get_current_user
 from models.rsvp_models import has_user_rsvpd, rsvp_for_event, delete_user_rsvp
 
@@ -88,4 +88,21 @@ def patch_event(event_id: int, event: PatchEvent, current_user_id: int = Depends
     if updated_event is None:
         return {"event": existing_event}
     return {"event": updated_event}
-    
+
+@router.get("/{event_id}/attendees", status_code=200)
+def get_event_attendees(event_id: int, current_user_id: int = Depends(get_current_user)):
+    existing_event = get_event_id(event_id)
+    if existing_event is None:
+        raise HTTPException(status_code=404,
+                            detail={"code": "NOT_FOUND", 
+                                    "message": "Event not found"})    
+    if current_user_id != existing_event["organiser_id"]:
+        raise HTTPException(status_code=403,
+                            detail={"code": "FORBIDDEN", 
+                                    "message": "User is not the event owner"})
+    attendees = event_attendees(event_id)
+    if attendees is False:
+        raise HTTPException(status_code=500,
+                            detail={"code": "ERROR", 
+                                    "message": "Database error occurred"})  
+    return {"attendees": attendees}
