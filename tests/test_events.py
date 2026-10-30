@@ -54,3 +54,39 @@ def test_get_events_id_returns_400_when_invalid_str_input_provided(client):
     assert response.status_code == 400
     assert data["error"][0]["message"] == f"Invalid input: '{invalid_input}'"
 
+def test_post_event_with_user_with_invalid_token_gets_401(client):
+    response = client.post("/events", headers={"Authorization": "Bearer 123456789"})
+    assert response.status_code == 401
+
+def test_post_event_with_user_with_missing_token_gets_401(client):
+    response = client.post("/events")
+    assert response.status_code == 401
+
+def test_post_event_with_missing_required_field_returns_400(client, get_token_and_partial_body_user_1):
+    response = client.post("/events", headers=get_token_and_partial_body_user_1["headers"], json=get_token_and_partial_body_user_1["json"])
+    assert response.status_code == 400
+
+def test_post_event_with_invalid_date_format_returns_400(client, get_token_and_body_invalid_date_format_user_1):
+    response = client.post("/events", headers=get_token_and_body_invalid_date_format_user_1["headers"], json=get_token_and_body_invalid_date_format_user_1["json"])
+    assert response.status_code == 400
+
+def test_post_event_with_valid_token_and_body_returns_201(client, get_token_and_body_user_1):
+    response = client.post("/events", headers=get_token_and_body_user_1["headers"], json=get_token_and_body_user_1["json"])
+    assert response.status_code == 201
+
+def test_post_event_with_valid_token_and_body_returns_returns_expected_response(client, get_token_and_body_user_1):
+    response = client.post("/events", headers=get_token_and_body_user_1["headers"], json=get_token_and_body_user_1["json"])
+    data = response.json()
+    assert response.status_code == 201
+    assert data["event"]["id"] == 6
+    assert data["event"]["title"] == "Summer Rooftop Social"
+    assert data["event"]["description"] == "An evening of networking and good vibes."
+    assert isinstance(data["event"]["starts_at"], str)
+    assert isinstance(data["event"]["ends_at"], str)
+    assert data["event"]["venue_id"] == 2
+    assert data["event"]["organiser_id"] == 1
+    assert isinstance(data["event"]["created_at"], str)
+
+def test_post_event_with_venue_id_that_doesnt_exist_returns_404_error(client, get_token_and_body_user_1_invalid_venue):
+    response = client.post("/events", headers=get_token_and_body_user_1_invalid_venue["headers"], json=get_token_and_body_user_1_invalid_venue["json"])
+    assert response.status_code == 404

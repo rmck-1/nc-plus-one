@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends
 from fastapi.exceptions import HTTPException
 from typing import Optional
-from schemas.events_schema import EventsResponse, EventResponse
-from models.events_models import get_events_venue_id_query_parameter, get_events_organiser_id_query_parameter, get_all_events, get_event_id
+from schemas.events_schema import EventsResponse, EventResponse, CreateEvent, NewEventResponse
+from models.events_models import get_events_venue_id_query_parameter, get_events_organiser_id_query_parameter, get_all_events, get_event_id, create_new_event
 from models.auth_models import get_current_user
 from models.rsvp_models import has_user_rsvpd, rsvp_for_event, delete_user_rsvp
 
@@ -55,3 +55,12 @@ def delete_rsvp(event_id: int, current_user_id: int = Depends(get_current_user))
                             detail={"code": "NOT_FOUND", 
                                     "message": "Not registered for event"})
     return
+
+@router.post("", status_code=201, response_model=NewEventResponse)
+def post_event(event: CreateEvent, current_user_id: int = Depends(get_current_user)):
+    event_details = create_new_event(current_user_id, event.title, event.description, event.starts_at, event.ends_at, event.venue_id)
+    if event_details == "VENUE_NOT_FOUND":
+        raise HTTPException(status_code=404,
+                            detail={"code": "NOT_FOUND", 
+                                    "message": "Venue not found"})
+    return {"event": event_details}

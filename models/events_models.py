@@ -1,5 +1,6 @@
 from db.seed.connections import get_connection
 import psycopg2.extras
+from psycopg2.errors import ForeignKeyViolation
 
 def get_all_events():
     conn = get_connection()
@@ -62,3 +63,27 @@ def get_event_id(event_id):
     cursor.close()
     conn.close()
     return row
+
+def create_new_event(user_id, title, description, starts_at, ends_at, venue_id):
+    conn = get_connection()
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)    
+    try:
+        cursor.execute("""
+        INSERT INTO events
+        (title, description, starts_at, ends_at, organiser_id, venue_id)
+        VALUES
+        (%s, %s, %s, %s, %s, %s)
+        RETURNING id, title, description, starts_at, ends_at, venue_id, organiser_id, created_at;
+        """, (title, description, starts_at, ends_at, user_id, venue_id))
+        new_event = cursor.fetchone()
+        conn.commit()
+        return new_event
+    except ForeignKeyViolation:
+        conn.rollback()
+        return "VENUE_NOT_FOUND"
+    except Exception:
+        conn.rollback()
+        return False
+    finally:
+        cursor.close()
+        conn.close()

@@ -93,7 +93,52 @@ def get_auth_token_user_1():
     return auth_headers
 
 @pytest.fixture()
-def get_auth_token_user_2():
-    token = create_access_token(id=2)
-    auth_headers = {"Authorization": f"Bearer {token}"}
-    return auth_headers
+def get_token_and_body_user_1():
+    token = create_access_token(id=1)
+    body = {
+       "title": "Summer Rooftop Social",
+       "description": "An evening of networking and good vibes.",
+       "starts_at": "2025-08-15T18:00:00Z",
+       "ends_at": "2025-08-15T21:00:00Z",
+       "venue_id": 2
+    }
+    return {"headers": {"Authorization": f"Bearer {token}"},
+            "json": body}
+
+@pytest.fixture()
+def get_token_and_partial_body_user_1():
+    token = create_access_token(id=1)
+    body = {
+       "title": "Summer Rooftop Social",
+       "description": "An evening of networking and good vibes.",
+       "starts_at": "2025-08-15T18:00:00Z",
+       "ends_at": "2025-08-15T21:00:00Z"
+    }
+    return {"headers": {"Authorization": f"Bearer {token}"},
+            "json": body}
+
+@pytest.fixture()
+def get_token_and_body_invalid_date_format_user_1():
+    token = create_access_token(id=1)
+    body = {
+       "title": "Summer Rooftop Social",
+       "description": "An evening of networking and good vibes.",
+       "starts_at": "30/10/2026",
+       "ends_at": "2025-08-15T21:00:00Z",
+       "venue_id" "venue_id": 2
+    }
+    return {"headers": {"Authorization": f"Bearer {token}"},
+            "json": body}
+
+@pytest.fixture()
+def get_token_and_body_user_1_invalid_venue():
+    token = create_access_token(id=1)
+    body = {
+       "title": "Summer Rooftop Social",
+       "description": "An evening of networking and good vibes.",
+       "starts_at": "2025-08-15T18:00:00Z",
+       "ends_at": "2025-08-15T21:00:00Z",
+       "venue_id": 999
+    }
+    return {"headers": {"Authorization": f"Bearer {token}"},
+            "json": body}
