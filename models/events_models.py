@@ -87,3 +87,44 @@ def create_new_event(user_id, title, description, starts_at, ends_at, venue_id):
     finally:
         cursor.close()
         conn.close()
+
+def update_event(event_id: int, update_fields: dict):
+    """
+    Update an existing event in the events table.
+    What fields that are passed to the function can vary (description, starts_at, ends_at)
+    Meaning the SQL statement also has to vary and be constructed dynamically
+
+    Args:
+        fields from the events_schema PatchEvent Class
+    Returns:
+        the newly updated row from the events table
+    """
+    if not update_fields: # checks that the request body has passed in fields to update
+        return None
+    conditions = [] # the columns to update in the SET statement
+    values = [] # the values to pass in
+    for column, value in update_fields.items(): # this populates the two lists
+        conditions.append(f"{column} = %s") 
+        values.append(value)
+    query_string = ", ".join(conditions) # this creates the full query string
+    values.append(event_id) # added to the end of the list because this is the condition for the WHERE clause
+    conn = get_connection()
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
+    try:
+        query = f"""
+        UPDATE events
+        SET {query_string}
+        WHERE id = %s
+        RETURNING *;
+        """
+        cursor.execute(query, tuple(values))
+        updated_event = cursor.fetchone()
+        conn.commit()
+        return updated_event
+    except Exception:
+        conn.rollback()
+        return False
+    finally:
+        cursor.close()
+        conn.close()
