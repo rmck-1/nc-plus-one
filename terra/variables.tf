@@ -3,3 +3,14 @@ variable "key_name" {
     type = string
 }
 
+variable "db_username" {
+    description = "The username to be used in the RDS database"
+}
+
+variable "db_password" {
+    description = "The password to be used in the RDS database"
+}
+
+variable "jwt_secret" {
+    description = "The JWT secret"
+}

@@ -47,3 +47,16 @@ resource "aws_vpc_security_group_egress_rule" "allow_egress" {
     }
 
 }
+
+resource "aws_security_group" "rds_sg" {
+    name = "rds_security_group"
+    description = "allow postgresql traffic from the EC2 server"
+}
+
+resource "aws_vpc_security_group_ingress_rule" "allow_ec2_postgres" {
+    security_group_id = aws_security_group.rds_sg.id
+    referenced_security_group_id = aws_security_group.allow_http_ssh.id
+    from_port = 5432
+    to_port = 5432
+    ip_protocol = "tcp"
+}

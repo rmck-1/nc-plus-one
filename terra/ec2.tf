@@ -11,7 +11,14 @@ resource "aws_instance" "demo_instance" {
     vpc_security_group_ids = [aws_security_group.allow_http_ssh.id]
     key_name = var.key_name
 
-    user_data = file("${path.module}/api_launch.sh")
+    user_data = templatefile("${path.module}/api_launch.sh", {
+        db_password = var.db_password
+        db_username = var.db_username
+        db_name = "postgres"
+        db_address = aws_db_instance.api_db.address
+        db_port = 5432
+        jwt_secret = var.jwt_secret
+    })
     user_data_replace_on_change = true
 }
 
