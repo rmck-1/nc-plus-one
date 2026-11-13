@@ -6,3 +6,4 @@ __pycache__
 .pytest_cache
 pytest_cache
 sql_statements.sql
+cloud_review.md
