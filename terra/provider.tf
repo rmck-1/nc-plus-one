@@ -19,7 +19,7 @@ provider "aws" {
 default_tags {
   tags = {
     environment = "Test"
-    purpose = "Learning API, terraform, and AWS"
+    purpose = "Learning API terraform and AWS"
     managed_by = "terraform"
     iaac_location = "northcoders/projects/nc-plus-one/terra"
   }
