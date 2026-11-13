@@ -10,3 +10,4 @@ cloud_review.md
 .terraform/
 *.tfstate
 *.tfstate.backup
+*.tfvars
